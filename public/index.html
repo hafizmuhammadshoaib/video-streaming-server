@@ -9,9 +9,27 @@
   <h1>Express</h1>
   <p>Welcome to video streaming server with nodejs</p>
   <div>
-    <video id="videoPlayer" controls>
-      <source src="http://localhost:3000/video" type="video/mp4">
-    </video>
+    <video id="video" width="500" height="500" controls></video>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+      const video = document.getElementById('video');
+      const videoSrc = '/videos/output.m3u8';
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play();
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc;
+        video.addEventListener('loadedmetadata', () => {
+          video.play();
+        });
+      }
+    </script>
   </div>
 </body>
 
